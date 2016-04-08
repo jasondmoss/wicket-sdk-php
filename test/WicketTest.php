@@ -14,8 +14,8 @@ class WicketTest extends \PHPUnit_Framework_TestCase
 
 	public function testWicketHasWickets()
 	{
-		$wicket = new Wicket();
-		$this->assertTrue($wicket->hasWickets());
+		$wicket = new Client('app_key', 'api_key');
+		$this->assertNotEmpty($wicket);
 	}
 
 }
