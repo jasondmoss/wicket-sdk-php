@@ -10,7 +10,9 @@ namespace Wicket;
 
 
 use Exception;
+use Illuminate\Support\Str;
 use Prophecy\Exception\Doubler\ClassNotFoundException;
+use Wicket\Entities\Factory;
 
 class ApiResource
 {
@@ -25,7 +27,7 @@ class ApiResource
 	{
 		$this->client = $client;
 
-		$entity_class = sprintf('\Wicket\Entities\%s', str_replace(' ', '', ucwords(str_replace('_', ' ', $entity))));
+		$entity_class = join('\\', [__NAMESPACE__, 'Entities', Str::studly($entity)]);
 
 		try {
 			$entity_class = new $entity_class();
@@ -40,26 +42,36 @@ class ApiResource
 
 	public function all()
 	{
-		echo "api_res->all";
+		printf("\n%s()\n", __METHOD__);
 
 		$res = $this->client->get($this->entity);
-		
-		$data = $res['data'][0];
-		print_r($data);
+
+		return $res;
 	}
 
-	public function fetch()
+	public function fetch($id)
 	{
-		// TODO: Implement fetch() method.
+		printf("\n%s(%s)\n", __METHOD__, $id);
+
+		$result = $this->client->get($this->entity . '/' . $id);
+
+		if ($result && array_key_exists('data', $result)) {
+			$result = Factory::create($result['data']);
+		}
+
+		return $result;
 	}
 
 	public function create()
 	{
-		// TODO: Implement create() method.
+		printf("\n%s %s\n", __CLASS__, __FUNCTION__);
+
+		$res = $this->client->post($this->entity);
 	}
 
 	public function update()
 	{
+		printf("\n%s(%s)\n", __METHOD__, $id);
 		// TODO: Implement update() method.
 	}
 

@@ -9,10 +9,7 @@
 namespace Wicket\Entities;
 
 
-class Organization
-	extends Base
+class Organizations extends Base
 {
-	/** Relations */
-	protected $emails = [];
 
 }

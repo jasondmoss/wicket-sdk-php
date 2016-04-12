@@ -12,12 +12,28 @@ namespace Wicket\Entities;
 /**
  * Class Base
  * Maybe checkout \Illuminate\Database\Eloquent\Model for a little motivation for the BaseClass
- * 
+ *
  * @package Wicket\Entities
  */
 class Base
 {
+	public $type;
+	public $id;
 	protected $attributes;
+	protected $relationships;
+	protected $meta;
+	protected $includes;
+
+	/**
+	 * Base constructor.
+	 * @param $type
+	 * @param $id
+	 */
+	public function __construct($type = null, $id = null)
+	{
+		$this->type = $type;
+		$this->id = $id;
+	}
 
 	/**
 	 * Dynamically retrieve attributes on the model.
@@ -65,6 +81,11 @@ class Base
 		$this->attributes[$key] = $value;
 
 		return $this;
+	}
+
+	public function addRelationship($type, Base $entity)
+	{
+		$this->relationships[$type][] = $entity;
 	}
 
 }

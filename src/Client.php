@@ -5,23 +5,21 @@ namespace Wicket;
 use Firebase\JWT\JWT;
 use GuzzleHttp;
 use Psr\Http\Message\ResponseInterface;
-use SebastianBergmann\ObjectEnumerator\Enumerator;
 use Wicket\Entities\Organization;
 
 class Client
 {
-	protected $person_id;
 	private $api_endpoint = 'http://localhost:3000/';
 	private $api_key = null;
 	private $last_error = null;
 	private $last_request = [];
 	private $last_response = null;
 	private $timeout = 10;
+	
+	protected $person_id;
 
-	/** @var \Wicket\Entities\WicketResource $organization */
-	public $organization;
-	/** @var \Wicket\Entities\WicketResource $person */
-	public $person;
+	public $organizations;
+	public $people;
 
 
 	/**
@@ -33,15 +31,13 @@ class Client
 		$this->api_key = $api_key;
 		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint]);
 
-		
 		// init entities
-		
-		$this->organization = new ApiResource($this, 'organization');
-		//$this->person = new ApiResource('person');
-		
-		// address
-		// email
-		//	...
+
+		$this->organizations = new ApiResource($this, 'organizations');
+		$this->people = new ApiResource($this, 'people');
+		// addresses
+		// emails
+		// ...
 	}
 
 
@@ -169,8 +165,8 @@ class Client
 	{
 		$http_verb = strtoupper($http_verb);
 		printf("wSDK attempt %s connect: %s%s\n", $http_verb, $this->api_endpoint, $method);
-		$uri = $this->api_endpoint . '/' . $method;
 
+		$uri = $this->api_endpoint . '/' . $method;
 		$this->last_error = '';
 		$this->last_response = null;
 		$this->last_request = array_merge([
