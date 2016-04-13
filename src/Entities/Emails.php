@@ -11,5 +11,15 @@ namespace Wicket\Entities;
 
 class Emails extends Base
 {
+	public function __construct($data = null)
+	{
+		parent::__construct(strtolower(class_basename(__CLASS__)));
 
+		// set class attributes
+		if (is_array($data)) {
+			foreach ($data as $k => $v) {
+				$this->$k = $v;
+			}
+		}
+	}
 }

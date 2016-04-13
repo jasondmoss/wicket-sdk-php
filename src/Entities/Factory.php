@@ -14,11 +14,13 @@ use Illuminate\Support\Str;
 class Factory
 {
 	/**
-	 * Factory constructor.
-	 * @param $data
-	 * @return Base
+	 * Factory to create Wicket\Entities from JSON:API style response.
+	 * 
+	 * @param array $data JSON:API data block.
+	 * @param bool $related Traverse base `relationships`?
+	 * @return \Wicket\Entities\Base
 	 */
-	public static function create($data)
+	public static function create($data, $related = false)
 	{
 		$json_api_keys = array_intersect_key($data, array_flip(['type', 'id']));
 
@@ -36,16 +38,15 @@ class Factory
 		$entity = new $className($data['type'], $data['id']);
 
 		if (array_key_exists('attributes', $data)) {
-			foreach ($data['attributes'] as $k => $v) {
-				$entity->setAttribute($k, $v);
+			foreach ($data['attributes'] as $k => $related) {
+				$entity->setAttribute($k, $related);
 			}
 		}
 
-		if (array_key_exists('relationships', $data)) {
-			foreach ($data['relationships'] as $k => $v) {
-				if (array_key_exists('data', $v) && !empty($v['data'])) {
-					printf("addRelation: %s\n", $k);
-					$reldata = $v['data'];
+		if ($related && array_key_exists('relationships', $data)) {
+			foreach ($data['relationships'] as $k => $related) {
+				if (array_key_exists('data', $related) && !empty($related['data'])) {
+					$reldata = $related['data'];
 					if (!is_array($reldata)) $reldata = [$reldata];
 
 					foreach ($reldata as $relation) {

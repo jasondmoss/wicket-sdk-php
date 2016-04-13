@@ -8,7 +8,6 @@
 
 namespace Wicket\Entities;
 
-
 /**
  * Class Base
  * Maybe checkout \Illuminate\Database\Eloquent\Model for a little motivation for the BaseClass
@@ -22,7 +21,6 @@ class Base
 	protected $attributes;
 	protected $relationships;
 	protected $meta;
-	protected $includes;
 
 	/**
 	 * Base constructor.
@@ -66,7 +64,9 @@ class Base
 	 */
 	public function getAttribute($key)
 	{
-		if (array_key_exists($key, $this->attributes)) return $this->attributes[$key];
+		if (array_key_exists($key, $this->attributes)) {
+			return $this->attributes[$key];
+		}
 	}
 
 	/**
@@ -83,9 +83,52 @@ class Base
 		return $this;
 	}
 
+	/**
+	 * Add entity relationship with explicit type control.
+	 * 
+	 * @param $type
+	 * @param Base $entity
+	 */
 	public function addRelationship($type, Base $entity)
 	{
 		$this->relationships[$type][] = $entity;
+	}
+
+	/**
+	 * Add entity relationship using implicit entity type.
+	 * 
+	 * @param Base $entity
+	 */
+	public function attach(Base $entity)
+	{
+		$this->relationships[$entity->type][] = $entity;
+	}
+
+	public function toJsonAPI()
+	{
+		return ['data' => [
+			'attributes'    => $this->attributes,
+			'relationships' => $this->relationshipsJsonAPI(),
+		]];
+	}
+
+	private function relationshipsJsonAPI()
+	{
+		$encodable = [];
+		foreach ($this->relationships as $type => $entityList) {
+			$ents = collect($entityList);
+
+			$tattrs = $ents->transform(function ($item, $key) {
+				return [
+					'type'       => $item->type,
+					'attributes' => $item->attributes,
+				];
+			});
+
+			$encodable[$type] = ['data' => $tattrs->toArray()];
+		}
+
+		return ($encodable);
 	}
 
 }

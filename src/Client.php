@@ -31,13 +31,13 @@ class Client
 		$this->api_key = $api_key;
 		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint]);
 
-		// init entities
+		// init certain api entities to expose them 'fluently'
 
 		$this->organizations = new ApiResource($this, 'organizations');
 		$this->people = new ApiResource($this, 'people');
 		// addresses
 		// emails
-		// ...
+		// ...?
 	}
 
 
@@ -50,7 +50,7 @@ class Client
 	{
 		$token = [
 			// 'iss' => $this->api_endpoint,
-			// 'aud' => $orguuid
+			// 'aud' => $orguuid,
 			'sub' => $this->person_id,
 			'iat' => time(),
 			'nbf' => time(),
@@ -116,19 +116,19 @@ class Client
 		return $this->makeRequest('get', $method, $args);
 	}
 
-	public function post($method, $args = [])
+	public function post($method, $payload = [])
 	{
-		return $this->makeRequest('post', $method, $args);
+		return $this->makeRequest('post', $method, $payload);
 	}
 
-	public function put($method, $args = [])
+	public function put($method, $payload = [])
 	{
-		return $this->makeRequest('put', $method, $args);
+		return $this->makeRequest('put', $method, $payload);
 	}
 
-	public function patch($method, $args = [])
+	public function patch($method, $payload = [])
 	{
-		return $this->makeRequest('patch', $method, $args);
+		return $this->makeRequest('patch', $method, $payload);
 	}
 
 	public function delete($method, $args = [])
@@ -166,6 +166,7 @@ class Client
 		$http_verb = strtoupper($http_verb);
 		printf("wSDK attempt %s connect: %s%s\n", $http_verb, $this->api_endpoint, $method);
 
+		// todo: delete en lieu exposing guzzele->reponse
 		$uri = $this->api_endpoint . '/' . $method;
 		$this->last_error = '';
 		$this->last_response = null;
@@ -178,10 +179,10 @@ class Client
 			, parse_url($uri)
 		);
 
-		// JWT
-		// consider use GuzzleHttp\HandlerStack to push JWT as middleware
+		// todo: use GuzzleHttp\HandlerStack to push JWT as middleware
 		// http://docs.guzzlephp.org/en/latest/handlers-and-middleware.html#middleware
 		// https://github.com/eljam/guzzle-jwt-middleware
+		
 		if (!array_key_exists('headers', $args) || !array_key_exists('Authorization', $args['headers'])) {
 			$args['headers']['Authorization'] = $this->jwtHeaderAuth();
 		}

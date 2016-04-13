@@ -8,10 +8,11 @@
 
 namespace Wicket;
 
-
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Prophecy\Exception\Doubler\ClassNotFoundException;
+use Wicket\Entities\Base;
 use Wicket\Entities\Factory;
 
 class ApiResource
@@ -21,6 +22,7 @@ class ApiResource
 
 	/**
 	 * ApiResource constructor.
+	 * @param \Wicket\Client $client
 	 * @param $entity
 	 */
 	public function __construct(Client $client, $entity)
@@ -40,11 +42,18 @@ class ApiResource
 		return $entity_class;
 	}
 
+	/**
+	 * @return Collection|array|false A Collection[] if the response has a `data` block, else the rest.
+	 */
 	public function all()
 	{
 		printf("\n%s()\n", __METHOD__);
 
 		$res = $this->client->get($this->entity);
+
+		if (array_key_exists('data', $res) && !empty($res['data'])) {
+			$res = collect($res['data']);
+		}
 
 		return $res;
 	}
@@ -56,20 +65,38 @@ class ApiResource
 		$result = $this->client->get($this->entity . '/' . $id);
 
 		if ($result && array_key_exists('data', $result)) {
-			$result = Factory::create($result['data']);
+			$result = Factory::create($result['data'], true);
 		}
 
 		return $result;
 	}
 
-	public function create()
+	public function create(Base $entity, $parent_tree = null)
 	{
 		printf("\n%s %s\n", __CLASS__, __FUNCTION__);
 
-		$res = $this->client->post($this->entity);
+		$entity_create_url = '';
+
+		if ($parent_tree) {
+			if (class_basename(get_class($parent_tree)) != 'Collection') {
+				if (!is_array($parent_tree)) $parent_tree = [$parent_tree];
+				$parent_tree = collect($parent_tree);
+			}
+
+			$entity_create_url = $parent_tree->reduce(function ($url, $ent) {
+				return $url . '/' . $ent->type . '/' . $ent->id;
+			});
+		}
+		$entity_create_url .= '/' . $entity->type;
+
+		$payload = ['json' => $entity->toJsonAPI()];
+
+		$res = $this->client->post($entity_create_url, $payload);
+
+		return $res;
 	}
 
-	public function update()
+	public function update($id)
 	{
 		printf("\n%s(%s)\n", __METHOD__, $id);
 		// TODO: Implement update() method.

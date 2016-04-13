@@ -1,8 +1,7 @@
 <?php
-
 require_once "vendor/autoload.php";
 
-// DotENV
+// todo: DotENV
 
 $API_APP_KEY = 'WICKET_APP_KEY';
 $API_JWT_SECRET = '0e292dd9eaaa5e33169a8528cf8ea5051ad20f61828d7cfe2622b7780ceab29a90d609285c2b19f0a75317e98511ac45366ce44de81bbb7221970c6e51236a7d';
@@ -14,142 +13,64 @@ $org_uuid = 'ca23bab4-6dfc-4f71-b6d8-a4c3478c7495';
 $client = new Wicket\Client($API_APP_KEY, $API_JWT_SECRET);
 $client->authorize($person_id);
 
-$org = $client->organizations->all();
-$orgs = $org['data'];
-foreach ($orgs as $org) {
-	printf("%s |%d| [%-9s] %7s : %s\n"
-		, $org['id']
-		, $org['attributes']['ancestry']
-		, $org['attributes']['type']
-		, $org['attributes']['alternate_name']
-		, $org['attributes']['legal_name']
-	);
-}
+$orgs = $client->organizations->all();
 
-$org_cpa = $client->organizations->fetch('ca23bab4-6dfc-4f71-b6d8-a4c3478c7495');
+//$orgs->each(function ($org) {
+//	printf("%s |%d| [%-9s] %7s : %s\n"
+//		, $org['id']
+//		, $org['attributes']['ancestry']
+//		, $org['attributes']['type']
+//		, $org['attributes']['alternate_name']
+//		, $org['attributes']['legal_name']
+//	);
+//});
 
-var_dump($org_cpa);
+/** @var \Wicket\Entities\Organizations $org_cpa */
+$org_cpa = $client->organizations->fetch($orgs->last()['id']);
 
-printf("o.id: %s\n", $org_cpa->id);
-printf("o.type: %s\n", $org_cpa->type);
-printf("o.legal_name: %s\n", $org_cpa->legal_name);
+//printf("o.id: %s\n", $org_cpa->id);
+//printf("o.type: %s\n", $org_cpa->type);
+//printf("o.legal_name: %s\n", $org_cpa->legal_name);
 
-$peeps = $client->people->all()['data'];
-$scott = $client->people->fetch('cc2ffffe-4768-485a-a61d-0ac62e4b515b');
+$peeps = $client->people->all();
 
-print_r('SCOTT: ');
-print_r($scott);
-printf("s.name: %s\n", $scott->alternate_name);
+$scott = $peeps->search(function ($person) {
+	return $person['attributes']['given_name'] == 'Scott';
+});
+$scott_user_id = $peeps->get($scott)['id'];
 
+$scott = $client->people->fetch($scott_user_id);
 
-die;
+//print_r('SCOTT: ');
+//print_r($scott);
+//printf("scott.name: %s\n", $scott->alternate_name);
 
-/*
-// resource style
+$eml = new \Wicket\Entities\Emails([
+	'address' => sprintf('s+%d@ind.ninja', rand(10000, 99999)),
+	'primary' => true,
+]);
 
-$res = $wicket->organization->fetch('uuid');
-$people = $res->people();
+$phone = new \Wicket\Entities\Phones([
+	'area_code' => sprintf('%d', rand(100, 999)),
+	'number'    => sprintf('%d-%d', rand(100, 999), rand(1000, 9999)),
+]);
 
-throw new WicketException()
+$phone2 = new \Wicket\Entities\Phones([
+	'area_code' => sprintf('%d', rand(100, 999)),
+	'number'    => sprintf('%d-%d', rand(100, 999), rand(1000, 9999)),
+	'extension' => sprintf('%d', rand(100, 999)),
+]);
 
-// fluent style
+$person = new \Wicket\Entities\People([
+	'given_name'  => sprintf('Alice%d', rand(10000, 99999)),
+	'family_name' => sprintf('Smith%d', rand(10000, 99999)),
+]);
 
-$wicket->organizations('uuid')
-->people // Wicket\Entitles\Person
+$person->attach($eml);
+$person->attach($phone);
+$person->attach($phone2);
 
-// Resource ops
-	->all()
-	->find()
-	->create()
-	->update()
-	->delete()
-	->relationships()->sync()
-	->relationships()->attach()
-	->relationships()->detach()
-*/
+$client->people->create($person, $org_cpa);
 
-//$wicket->organizations('uuid')
-//	->person
-//	->create([
-//		'fname' => '',
-//		'lname' => '',
-//		'username' => '',
-//		'phone' => '',
-//		'email' => '',
-//	]);
+// #booya
 
-// $wicket->organizations('uuid')
-//	 ->address | phone | email ...
-//   ->create([
-//		
-//	]);
-
-//$person = $wicket->initPerson();
-//$wicket->list('');
-//$wicket->people('');
-
-//$res = $wicket->get('organizations');
-//$res = $client->get('people');
-
-/*
-// Interface Ideas
-
-// nouns
-
-
-$wicket->user->list();
-
-$new_user = [
-	'name'  => 'uname',
-	'email' => 'email',
-//	...
-];
-
-$wicket->user->create($new_user);
-
-// verbs
-
-$wicket->list('user');
-$wicket->create('user', $new_user);
-
-$wicket->create('organization');
- 
-
---- From PostMan
-
-{
-    "data": {
-        "attributes": {
-            "given_name": "baz",
-            "family_name": "baz"
-        },
-        "relationships": {
-            "emails": { 
-                "data": [
-                    { "type": "emails", "attributes": { "address": "t@ind.ninja", "primary": true } }
-                ]
-            }
-        }
-    }
-}
-
-new Person(
-[
-	"attributes" => [
-		"given_name": "baz",
-		"family_name": "baz"
-	],
-	"relationships" => [
-		"emails": { 
-			"data": [
-				{ "type": "emails", "attributes": { "address": "t@ind.ninja", "primary": true } }
-			]
-		}
-	]
-]
-);
-
-$person->emails->push(new Email(['address', 'primary' => true]));
-$person->setRelationship('emails' => [ new Email(['address', 'primary' => true]) ] );
-
-*/
