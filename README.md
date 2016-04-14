@@ -71,8 +71,12 @@ composer.phar update
 <?php
 require_once "vendor/autoload.php";
 
-$client = new Wicket\Client(env('API_APP_KEY'), env('API_JWT_SECRET'));
-$client->authorize(env('PERSON_ID'));
+$client = new Wicket\Client(
+	env('API_APP_KEY'),
+	env('API_JWT_SECRET'),
+	'https://api.wicket.io'
+);
+$client->authorize(envhttps://api.wicket.io/('PERSON_ID'));
 
 $orgs = $client->organizations->all();
 ```
