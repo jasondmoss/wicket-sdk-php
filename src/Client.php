@@ -7,28 +7,35 @@ use GuzzleHttp;
 use Psr\Http\Message\ResponseInterface;
 use Wicket\Entities\Organization;
 
+
 class Client
 {
-	private $api_endpoint = 'http://localhost:3000/';
-	private $api_key = null;
+	private $api_endpoint;
+	private $app_key;
+	private $api_key;
+	private $client;
 	private $last_error = null;
 	private $last_request = [];
 	private $last_response = null;
 	private $timeout = 10;
-	
+
 	protected $person_id;
 
 	public $organizations;
 	public $people;
 
-
 	/**
 	 * Wicket constructor.
+	 * @param null $app_key
 	 * @param $api_key
+	 * @param string $api_endpoint
 	 */
-	public function __construct($app_key = null, $api_key = null)
+	public function __construct($app_key = null, $api_key = null, $api_endpoint = 'http://localhost:3000/')
 	{
+		$this->app_key = $app_key;
 		$this->api_key = $api_key;
+		$this->api_endpoint = $api_endpoint;
+
 		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint]);
 
 		// init certain api entities to expose them 'fluently'
@@ -182,7 +189,7 @@ class Client
 		// todo: use GuzzleHttp\HandlerStack to push JWT as middleware
 		// http://docs.guzzlephp.org/en/latest/handlers-and-middleware.html#middleware
 		// https://github.com/eljam/guzzle-jwt-middleware
-		
+
 		if (!array_key_exists('headers', $args) || !array_key_exists('Authorization', $args['headers'])) {
 			$args['headers']['Authorization'] = $this->jwtHeaderAuth();
 		}
