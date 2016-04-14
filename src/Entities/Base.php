@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: scott
- * Date: 08/04/16
- * Time: 3:49 PM
- */
-
 namespace Wicket\Entities;
 
 /**
@@ -24,11 +17,13 @@ class Base
 
 	/**
 	 * Base constructor.
-	 * @param $type
-	 * @param $id
+	 * @param array|null $attributes
+	 * @param null $type
+	 * @param null $id
 	 */
-	public function __construct($type = null, $id = null)
+	public function __construct($attributes = [], $type = null, $id = null)
 	{
+		$this->attributes = $attributes;
 		$this->type = $type;
 		$this->id = $id;
 	}
@@ -85,7 +80,7 @@ class Base
 
 	/**
 	 * Add entity relationship with explicit type control.
-	 * 
+	 *
 	 * @param $type
 	 * @param Base $entity
 	 */
@@ -96,7 +91,7 @@ class Base
 
 	/**
 	 * Add entity relationship using implicit entity type.
-	 * 
+	 *
 	 * @param Base $entity
 	 */
 	public function attach(Base $entity)

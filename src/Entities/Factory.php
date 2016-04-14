@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: scott
- * Date: 12/04/16
- * Time: 2:56 PM
- */
-
 namespace Wicket\Entities;
 
 
@@ -15,7 +8,7 @@ class Factory
 {
 	/**
 	 * Factory to create Wicket\Entities from JSON:API style response.
-	 * 
+	 *
 	 * @param array $data JSON:API data block.
 	 * @param bool $related Traverse base `relationships`?
 	 * @return \Wicket\Entities\Base
@@ -34,14 +27,10 @@ class Factory
 			$className = join('\\', [__NAMESPACE__, 'Base']);
 		}
 
-		/** @var Base $entity */
-		$entity = new $className($data['type'], $data['id']);
+		$attrs = array_key_exists('attributes', $data) ? $data['attributes'] : null;
 
-		if (array_key_exists('attributes', $data)) {
-			foreach ($data['attributes'] as $k => $related) {
-				$entity->setAttribute($k, $related);
-			}
-		}
+		/** @var Base $entity */
+		$entity = new $className($attrs, $data['type'], $data['id']);
 
 		if ($related && array_key_exists('relationships', $data)) {
 			foreach ($data['relationships'] as $k => $related) {

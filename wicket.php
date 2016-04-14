@@ -5,31 +5,32 @@ require_once "vendor/autoload.php";
 
 $API_APP_KEY = 'WICKET_APP_KEY';
 $API_JWT_SECRET = '0e292dd9eaaa5e33169a8528cf8ea5051ad20f61828d7cfe2622b7780ceab29a90d609285c2b19f0a75317e98511ac45366ce44de81bbb7221970c6e51236a7d';
-$PERSON_ID = 'df1c90c1-1855-4f14-b3d1-293163deb2e2';
+$PERSON_ID = 'ae0fc5ae-5761-494b-9fd1-2fee0fe46894';
 
 // SDK
 
-$client = new Wicket\Client($API_APP_KEY, $API_JWT_SECRET);
+$client = new Wicket\Client(
+	$API_APP_KEY,
+	$API_JWT_SECRET,
+	'http://api.wicket.io'
+);
+
 $client->authorize($PERSON_ID);
 
 $orgs = $client->organizations->all();
 
-//$orgs->each(function ($org) {
-//	printf("%s |%d| [%-9s] %7s : %s\n"
-//		, $org['id']
-//		, $org['attributes']['ancestry']
-//		, $org['attributes']['type']
-//		, $org['attributes']['alternate_name']
-//		, $org['attributes']['legal_name']
-//	);
-//});
+$orgs->each(function ($org) {
+	printf("%s |%d| [%-9s] %7s : %s\n"
+		, $org['id']
+		, $org['attributes']['ancestry']
+		, $org['attributes']['type']
+		, $org['attributes']['alternate_name']
+		, $org['attributes']['legal_name']
+	);
+});
 
 /** @var \Wicket\Entities\Organizations $org_cpa */
 $org_cpa = $client->organizations->fetch($orgs->last()['id']);
-
-//printf("o.id: %s\n", $org_cpa->id);
-//printf("o.type: %s\n", $org_cpa->type);
-//printf("o.legal_name: %s\n", $org_cpa->legal_name);
 
 $peeps = $client->people->all();
 
@@ -40,12 +41,8 @@ $scott_user_id = $peeps->get($scott)['id'];
 
 $scott = $client->people->fetch($scott_user_id);
 
-//print_r('SCOTT: ');
-//print_r($scott);
-//printf("scott.name: %s\n", $scott->alternate_name);
-
 $eml = new \Wicket\Entities\Emails([
-	'address' => sprintf('s+%d@ind.ninja', rand(10000, 99999)),
+	'address' => sprintf('alice_smith+%d@ind.ninja', rand(10000, 99999)),
 	'primary' => true,
 ]);
 
@@ -69,7 +66,7 @@ $person->attach($eml);
 $person->attach($phone);
 $person->attach($phone2);
 
-$client->people->create($person, $org_cpa);
+$new_person = $client->people->create($person, $org_cpa);
 
 // #booya
 

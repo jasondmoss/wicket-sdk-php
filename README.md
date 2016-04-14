@@ -78,6 +78,19 @@ $client = new Wicket\Client(
 );
 $client->authorize(env('PERSON_ID'));
 
-$orgs = $client->organizations->all();
-// ...
+$orgs = $client->organizations->all();    // Collection()
+
+$eml = new \Wicket\Entities\Emails([
+	'address' => sprintf('alice_smith+%d@ind.ninja', rand(10000, 99999)),
+	'primary' => true,
+]);
+
+$person = new \Wicket\Entities\People([
+	'given_name'  => sprintf('Alice%d', rand(10000, 99999)),
+	'family_name' => sprintf('Smith%d', rand(10000, 99999)),
+]);
+
+$person->attach($eml);    // related entities can be `attached`
+
+$new_person = $client->people->create($person, $org);
 ```

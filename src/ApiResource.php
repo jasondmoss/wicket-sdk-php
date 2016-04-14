@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: scott
- * Date: 08/04/16
- * Time: 2:26 PM
- */
-
 namespace Wicket;
 
 use Exception;
@@ -47,8 +40,6 @@ class ApiResource
 	 */
 	public function all()
 	{
-		printf("\n%s()\n", __METHOD__);
-
 		$res = $this->client->get($this->entity);
 
 		if (array_key_exists('data', $res) && !empty($res['data'])) {
@@ -60,8 +51,6 @@ class ApiResource
 
 	public function fetch($id)
 	{
-		printf("\n%s(%s)\n", __METHOD__, $id);
-
 		$result = $this->client->get($this->entity . '/' . $id);
 
 		if ($result && array_key_exists('data', $result)) {
@@ -73,8 +62,6 @@ class ApiResource
 
 	public function create(Base $entity, $parent_tree = null)
 	{
-		printf("\n%s %s\n", __CLASS__, __FUNCTION__);
-
 		$entity_create_url = '';
 
 		if ($parent_tree) {
@@ -91,14 +78,13 @@ class ApiResource
 
 		$payload = ['json' => $entity->toJsonAPI()];
 
-		$res = $this->client->post($entity_create_url, $payload);
+		$res = $this->client->post(ltrim($entity_create_url, '/'), $payload);
 
 		return $res;
 	}
 
 	public function update($id)
 	{
-		printf("\n%s(%s)\n", __METHOD__, $id);
 		// TODO: Implement update() method.
 	}
 

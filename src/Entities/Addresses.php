@@ -1,15 +1,12 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: scott
- * Date: 12/04/16
- * Time: 6:38 PM
- */
-
 namespace Wicket\Entities;
 
 
 class Addresses extends Base
 {
-
+	public function __construct($attributes = [], $type = null, $id = null)
+	{
+		parent::__construct($attributes, $type, $id);
+		$this->type = $type ?: strtolower(class_basename(__CLASS__));
+	}
 }

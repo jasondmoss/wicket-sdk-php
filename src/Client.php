@@ -34,7 +34,7 @@ class Client
 	{
 		$this->app_key = $app_key;
 		$this->api_key = $api_key;
-		$this->api_endpoint = $api_endpoint;
+		$this->api_endpoint = rtrim($api_endpoint, '/') . '/';
 
 		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint]);
 
