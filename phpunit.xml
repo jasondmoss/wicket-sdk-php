@@ -10,8 +10,8 @@
 		 stopOnFailure="false"
 		 syntaxCheck="false">
 	<testsuites>
-		<testsuite name="Wicket Test Suite">
-			<directory suffix=".php">./tests/</directory>
+		<testsuite name="WicketSDK Test Suite">
+			<directory suffix=".php">./test/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
