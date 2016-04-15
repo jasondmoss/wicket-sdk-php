@@ -1,6 +1,8 @@
 wicket-sdk-php
 ==============
 
+[![Build Status](https://travis-ci.org/industrialdev/wicket-sdk-php.svg?branch=master)](https://travis-ci.org/industrialdev/wicket-sdk-php)
+
 A PHP library for the Wicket Core API. https://wicket.io/technology
 
 ## Wicket
