@@ -173,7 +173,7 @@ class Client
 		$http_verb = strtoupper($http_verb);
 		printf("wSDK attempt %s connect: %s%s\n", $http_verb, $this->api_endpoint, $method);
 
-		// todo: delete en lieu exposing guzzele->reponse
+		// todo: delete en lieu exposing guzzle->reponse
 		$uri = $this->api_endpoint . '/' . $method;
 		$this->last_error = '';
 		$this->last_response = null;

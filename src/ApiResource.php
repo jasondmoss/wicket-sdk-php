@@ -36,17 +36,19 @@ class ApiResource
 	}
 
 	/**
-	 * @return Collection|array|false A Collection[] if the response has a `data` block, else the rest.
+	 * @return Collection|array|false A Collection[Entities] if the response has a `data` block, else the rest.
 	 */
 	public function all()
 	{
-		$res = $this->client->get($this->entity);
+		$response = $this->client->get($this->entity);
 
-		if (array_key_exists('data', $res) && !empty($res['data'])) {
-			$res = collect($res['data']);
+		if (array_key_exists('data', $response) && !empty($response['data'])) {
+			$response = collect($response['data'])->transform(function ($ent) {
+				return Base::fromJsonAPI($ent);
+			});
 		}
 
-		return $res;
+		return $response;
 	}
 
 	public function fetch($id)

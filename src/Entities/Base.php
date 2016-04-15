@@ -29,6 +29,18 @@ class Base
 	}
 
 	/**
+	 * Given a response block from JsonAPI, convert it into a Wicket entity.
+	 *
+	 * @param $input JsonAPI response block.
+	 * @param bool $related
+	 * @return Base A wicket:sdk entity.
+	 */
+	public static function fromJsonAPI($input, $related = false)
+	{
+		return Factory::create($input, $related);
+	}
+
+	/**
 	 * Dynamically retrieve attributes on the model.
 	 *
 	 * @param  string $key
@@ -110,7 +122,8 @@ class Base
 	private function relationshipsJsonAPI()
 	{
 		$encodable = [];
-		foreach ($this->relationships as $type => $entityList) {
+		
+		if ($this->relationships) foreach ($this->relationships as $type => $entityList) {
 			$ents = collect($entityList);
 
 			$tattrs = $ents->transform(function ($item, $key) {
@@ -123,7 +136,7 @@ class Base
 			$encodable[$type] = ['data' => $tattrs->toArray()];
 		}
 
-		return ($encodable);
+		return $encodable;
 	}
 
 }

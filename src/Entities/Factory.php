@@ -15,10 +15,12 @@ class Factory
 	 */
 	public static function create($data, $related = false)
 	{
+		if (!is_array($data)) return new Base;
+		
 		$json_api_keys = array_intersect_key($data, array_flip(['type', 'id']));
 
 		if (!count($json_api_keys) >= 2) {
-			throw new \InvalidArgumentException('Are you sure this data is JSON:API?' . print_r($data, 1));
+			throw new \InvalidArgumentException('Are you sure this data is JSON:API: ' . print_r($data, 1));
 		}
 
 		$className = join('\\', [__NAMESPACE__, Str::studly($data['type'])]);

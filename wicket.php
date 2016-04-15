@@ -19,25 +19,17 @@ $client->authorize($PERSON_ID);
 
 $orgs = $client->organizations->all();
 
-$orgs->each(function ($org) {
-	printf("%s |%d| [%-9s] %7s : %s\n"
-		, $org['id']
-		, $org['attributes']['ancestry']
-		, $org['attributes']['type']
-		, $org['attributes']['alternate_name']
-		, $org['attributes']['legal_name']
-	);
-});
-
 /** @var \Wicket\Entities\Organizations $org_cpa */
-$org_cpa = $client->organizations->fetch($orgs->last()['id']);
+//$org_cpa = $client->organizations->fetch($orgs->last()['id']);
+$org_cpa = $orgs->last();
 
 $peeps = $client->people->all();
 
 $scott = $peeps->search(function ($person) {
-	return $person['attributes']['given_name'] == 'Scott';
+	return $person->given_name == 'Scott';
 });
-$scott_user_id = $peeps->get($scott)['id'];
+
+$scott_user_id = $peeps->get($scott)->id;
 
 $scott = $client->people->fetch($scott_user_id);
 
