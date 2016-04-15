@@ -17,6 +17,15 @@ $client = new Wicket\Client(
 
 $client->authorize($PERSON_ID);
 
+$peeps = $client->people->list();
+$peeps->next();
+$ppl2 = $peeps->render(); //collection(ent)
+if ($peeps->hasPages()) {
+	
+}
+
+die;
+
 $orgs = $client->organizations->all();
 
 /** @var \Wicket\Entities\Organizations $org_cpa */

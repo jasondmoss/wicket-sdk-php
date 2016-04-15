@@ -42,11 +42,20 @@ class ApiResource
 	{
 		$response = $this->client->get($this->entity);
 
-		if (array_key_exists('data', $response) && !empty($response['data'])) {
-			$response = collect($response['data'])->transform(function ($ent) {
-				return Base::fromJsonAPI($ent);
-			});
+		if (array_key_exists('meta', $response)
+			&& array_key_exists('links', $response)
+			&& !empty($response['meta'])
+			&& !empty($response['links'])
+		) {
+			//$wlap = new WicketPaginator($response);
+			$wcol = new WicketCollection($response);
 		}
+
+		//if (array_key_exists('data', $response) && !empty($response['data'])) {
+		//	$response = collect($response['data'])->transform(function ($ent) {
+		//		return Base::fromJsonAPI($ent);
+		//	});
+		//}
 
 		return $response;
 	}
