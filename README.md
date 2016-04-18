@@ -24,7 +24,7 @@ With Wicket, take back your data, and provide your members with the best possibl
 
 ## Installing Wicket SDK
 
-The recommended way to install Guzzle is through
+The recommended way to install the WicketSDK is through
 [Composer](http://getcomposer.org).
 
 ```bash
@@ -32,7 +32,7 @@ The recommended way to install Guzzle is through
 curl -sS https://getcomposer.org/installer | php
 ```
 
-Write the Composer file to install the latest development version of Wicket:
+Write the Composer file to include the latest development version of WicketSDK:
 
 ```json
 cat > composer.json
@@ -55,10 +55,10 @@ Next, install the packages:
 php composer.phar install
 ```
 
-After installing, you need to require Composer's autoloader:
+After installing, you need only to `require_once` Composer's autoloader in your code:
 
 ```php
-require 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 ```
 
 You can then later update Wicket using composer:
