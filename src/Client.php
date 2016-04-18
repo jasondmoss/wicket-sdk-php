@@ -1,11 +1,9 @@
 <?php
 namespace Wicket;
 
-
 use Firebase\JWT\JWT;
 use GuzzleHttp;
 use Psr\Http\Message\ResponseInterface;
-use Wicket\Entities\Organization;
 
 
 class Client

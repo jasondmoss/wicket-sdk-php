@@ -12,21 +12,18 @@ $PERSON_ID = 'ae0fc5ae-5761-494b-9fd1-2fee0fe46894';
 $client = new Wicket\Client(
 	$API_APP_KEY,
 	$API_JWT_SECRET,
-	'http://api.wicket.io'
+	'https://api.wicket.io'
 );
 
 $client->authorize($PERSON_ID);
 
-$peeps = $client->people->list();
-$peeps->next();
-$ppl2 = $peeps->render(); //collection(ent)
-if ($peeps->hasPages()) {
-	
-}
-
-die;
+$peeps = $client->people->all();
+$peeps2 = $peeps->nextPage();
+$purl = $peeps->url(3);
+$peeps3 = $peeps->getPage($purl);
 
 $orgs = $client->organizations->all();
+$orgs2 = $orgs->nextPage();
 
 /** @var \Wicket\Entities\Organizations $org_cpa */
 //$org_cpa = $client->organizations->fetch($orgs->last()['id']);
