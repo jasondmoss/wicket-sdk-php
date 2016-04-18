@@ -2,7 +2,6 @@
 namespace Wicket;
 
 use Exception;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Prophecy\Exception\Doubler\ClassNotFoundException;
 use Wicket\Entities\Base;
@@ -21,14 +20,12 @@ class ApiResource
 	public function __construct(Client $client, $entity)
 	{
 		$this->client = $client;
-
 		$entity_class = join('\\', [__NAMESPACE__, 'Entities', Str::studly($entity)]);
 
 		try {
 			$entity_class = new $entity_class();
-
 			$this->entity = $entity;
-		} catch (Exception $e) {
+		} catch(Exception $e) {
 			throw new ClassNotFoundException($e->getMessage(), $entity_class);
 		}
 
@@ -36,17 +33,12 @@ class ApiResource
 	}
 
 	/**
-	 * @return Collection|array|false A Collection[Entities] if the response has a `data` block, else the rest.
+	 * @return WicketCollection A WicketCollection that may be pageable.
 	 */
 	public function all()
 	{
 		$response = $this->client->get($this->entity);
-
-		if (array_key_exists('data', $response) && !empty($response['data'])) {
-			$response = collect($response['data'])->transform(function ($ent) {
-				return Base::fromJsonAPI($ent);
-			});
-		}
+		$response = new WicketCollection($response, $this->client);
 
 		return $response;
 	}
@@ -68,7 +60,9 @@ class ApiResource
 
 		if ($parent_tree) {
 			if (class_basename(get_class($parent_tree)) != 'Collection') {
-				if (!is_array($parent_tree)) $parent_tree = [$parent_tree];
+				if (!is_array($parent_tree)) {
+					$parent_tree = [$parent_tree];
+				}
 				$parent_tree = collect($parent_tree);
 			}
 
