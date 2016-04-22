@@ -5,7 +5,7 @@ require_once "vendor/autoload.php";
 
 $API_APP_KEY = 'WICKET_APP_KEY';
 $API_JWT_SECRET = '0e292dd9eaaa5e33169a8528cf8ea5051ad20f61828d7cfe2622b7780ceab29a90d609285c2b19f0a75317e98511ac45366ce44de81bbb7221970c6e51236a7d';
-$PERSON_ID = 'ae0fc5ae-5761-494b-9fd1-2fee0fe46894';
+$PERSON_ID = '942f28ae-dce8-4c41-918a-b3a6ffc6fe37';
 
 // SDK
 
@@ -38,6 +38,8 @@ $scott = $peeps->search(function ($person) {
 $scott_user_id = $peeps->get($scott)->id;
 
 $scott = $client->people->fetch($scott_user_id);
+
+die;
 
 $eml = new \Wicket\Entities\Emails([
 	'address' => sprintf('alice_smith+%d@ind.ninja', rand(10000, 99999)),

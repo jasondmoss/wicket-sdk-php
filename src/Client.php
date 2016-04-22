@@ -5,14 +5,14 @@ use Firebase\JWT\JWT;
 use GuzzleHttp;
 use Psr\Http\Message\ResponseInterface;
 
-
 class Client
 {
 	private $api_endpoint;
 	private $app_key;
 	private $api_key;
+	/** @var \GuzzleHttp\Client */
 	private $client;
-	private $last_error = null;
+	private $last_error = false;
 	private $last_request = [];
 	private $last_response = null;
 	private $timeout = 10;
@@ -40,11 +40,8 @@ class Client
 
 		$this->organizations = new ApiResource($this, 'organizations');
 		$this->people = new ApiResource($this, 'people');
-		// addresses
-		// emails
-		// ...?
+		// addresses, emails, ...?
 	}
-
 
 	public function authorize($person_id)
 	{
@@ -169,31 +166,19 @@ class Client
 	private function makeRequest($http_verb = 'GET', $method, $args)
 	{
 		$http_verb = strtoupper($http_verb);
-		printf("wSDK attempt %s connect: %s%s\n", $http_verb, $this->api_endpoint, $method);
-
-		// todo: delete en lieu exposing guzzle->reponse
-		$uri = $this->api_endpoint . '/' . $method;
-		$this->last_error = '';
+		$this->last_error = false;
+		$this->last_request = [
+			'method'  => $http_verb,
+			'uri'     => $method,
+			'options' => $args,
+			'timeout' => $this->timeout,
+		];
 		$this->last_response = null;
-		$this->last_request = array_merge([
-				'method'  => $http_verb,
-				'uri'     => $uri,
-				'timeout' => $this->timeout,
-				'options' => $args,
-			]
-			, parse_url($uri)
-		);
 
-		// todo: use GuzzleHttp\HandlerStack to push JWT as middleware
-		// http://docs.guzzlephp.org/en/latest/handlers-and-middleware.html#middleware
-		// https://github.com/eljam/guzzle-jwt-middleware
+		$request = new GuzzleHttp\Psr7\Request($http_verb, $method, ['Authorization' => $this->jwtHeaderAuth()]);
+		$response = $this->client->send($request, $args);   # may override if array_key_exists('Authorization', $args['headers'])
 
-		if (!array_key_exists('headers', $args) || !array_key_exists('Authorization', $args['headers'])) {
-			$args['headers']['Authorization'] = $this->jwtHeaderAuth();
-		}
-
-		$response = $this->client->request($http_verb, $method, $args);
-
+		//printf("wSDK attempt %s connect: %s\n", $http_verb, $request->getUri());
 		return $this->formatResponse($response);
 	}
 
