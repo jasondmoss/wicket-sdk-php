@@ -121,6 +121,14 @@ class Client
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getApiEndpoint()
+	{
+		return $this->api_endpoint;
+	}
+	
+	/**
 	 * Make an HTTP GET request - for retrieving data
 	 * @param   string $method URL of the API request method
 	 * @param   array $args Assoc array of arguments (usually your data)
