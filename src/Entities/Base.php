@@ -111,6 +111,18 @@ class Base
 		$this->relationships[$entity->type][] = $entity;
 	}
 
+	/**
+	 * @param $name
+	 * @return array|null
+	 */
+	public function relationship($name) {
+		$relationship = !empty($this->relationships[$name])
+			? $this->relationships[$name]
+			: null;
+		
+		return $relationship;
+	}
+
 	public function toJsonAPI()
 	{
 		return ['data' => [
