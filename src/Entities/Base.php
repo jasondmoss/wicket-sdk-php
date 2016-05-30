@@ -13,6 +13,7 @@ class Base
 	public $id;
 	protected $attributes;
 	protected $relationships;
+	protected $included;
 	protected $meta;
 
 	/**
@@ -102,6 +103,17 @@ class Base
 	}
 
 	/**
+	 * Add entity included with explicit type control.
+	 *
+	 * @param array
+	 * @return Collection
+	 */
+	public function addIncluded(Array $included)
+	{
+		$this->included = collect($included);
+	}
+
+	/**
 	 * Add entity relationship using implicit entity type.
 	 *
 	 * @param Base $entity
@@ -119,8 +131,15 @@ class Base
 		$relationship = !empty($this->relationships[$name])
 			? $this->relationships[$name]
 			: null;
-		
+
 		return $relationship;
+	}
+
+	/**
+	 * @return array|null
+	 */
+	public function included() {
+		return $this->included;
 	}
 
 	public function toJsonAPI()
@@ -134,7 +153,7 @@ class Base
 	private function relationshipsJsonAPI()
 	{
 		$encodable = [];
-		
+
 		if ($this->relationships) foreach ($this->relationships as $type => $entityList) {
 			$ents = collect($entityList);
 

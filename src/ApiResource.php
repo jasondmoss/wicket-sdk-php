@@ -46,11 +46,15 @@ class ApiResource
 	public function fetch($id)
 	{
 		$result = $this->client->get($this->entity . '/' . $id);
-
+		if ($result && array_key_exists('included', $result)) {
+			$included = $result['included'];
+		}
 		if ($result && array_key_exists('data', $result)) {
 			$result = Factory::create($result['data'], true);
 		}
-
+		if (!empty($included)) {
+			$result->addIncluded($included);
+		}
 		return $result;
 	}
 

@@ -174,7 +174,6 @@ class Client
 
 		if (!empty($body)) {
 			$contents = json_decode($body->getContents(), true);
-
 			$statusCode = $response->getStatusCode();
 			if ($statusCode !== 200) {
 				$this->last_error = sprintf('%d: %s', $statusCode, $response->getReasonPhrase());
