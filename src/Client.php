@@ -24,7 +24,6 @@ class Client
 	public $organizations;
 	public $people;
 	public $orders;
-	public $users;
 
 	/**
 	 * Wicket constructor.
@@ -45,7 +44,6 @@ class Client
 		$this->organizations = new ApiResource($this, 'organizations');
 		$this->people = new ApiResource($this, 'people');
 		$this->orders = new ApiResource($this, 'orders');
-		$this->users = new ApiResource($this, 'users');
 		// addresses, emails, ...?
 	}
 
