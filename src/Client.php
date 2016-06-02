@@ -1,6 +1,7 @@
 <?php
 namespace Wicket;
 
+use Exception;
 use Firebase\JWT\JWT;
 use GuzzleHttp;
 use Psr\Http\Message\ResponseInterface;
@@ -23,6 +24,7 @@ class Client
 	public $organizations;
 	public $people;
 	public $orders;
+	public $users;
 
 	/**
 	 * Wicket constructor.
@@ -43,6 +45,7 @@ class Client
 		$this->organizations = new ApiResource($this, 'organizations');
 		$this->people = new ApiResource($this, 'people');
 		$this->orders = new ApiResource($this, 'orders');
+		$this->users = new ApiResource($this, 'users');
 		// addresses, emails, ...?
 	}
 
@@ -52,7 +55,7 @@ class Client
 		$this->access_token = $this->generateJwt($person_id);
 	}
 
-	protected function generateJwt($person_id, $expiresIn = 60*60*8)
+	protected function generateJwt($person_id, $expiresIn = 60 * 60 * 8)
 	{
 		$iat = time();
 
@@ -62,7 +65,7 @@ class Client
 			'sub' => $person_id,
 			'iat' => $iat,
 			'nbf' => $iat,
-			'exp' => $iat + $expiresIn
+			'exp' => $iat + $expiresIn,
 		];
 
 		return JWT::encode($token, $this->api_key);
@@ -198,7 +201,7 @@ class Client
 		$this->last_response = null;
 
 		$request = new GuzzleHttp\Psr7\Request($http_verb, $method, [
-			'Authorization' => 'Bearer ' . $this->access_token
+			'Authorization' => 'Bearer ' . $this->access_token,
 		]);
 
 		$response = $this->client->send($request, $args);   # may override if array_key_exists('Authorization', $args['headers'])
@@ -207,5 +210,31 @@ class Client
 		return $this->formatResponse($response);
 	}
 
+	/**
+	 * Attempt to authenticate credentials with the API server.
+	 * @param $username string The username, likely an email address.
+	 * @param $password string The plantext password.
+	 * @return string|false The UUID of the user when successful, or false.
+	 */
+	public function auth_attempt($username, $password)
+	{
+		$payload = [
+			'json' => [
+				'user' => [
+					'email'    => $username,
+					'password' => $password,
+				],
+			],
+		];
+
+		try {
+			$response = $this->post('/users/sign_in', $payload);
+			$response = empty($response) ? false : $response['access_token'];
+		} catch(Exception $e) {
+			$response = false;
+		}
+
+		return $response;
+	}
 
 }
