@@ -227,8 +227,14 @@ class Client
 
 		try {
 			$response = $this->post('/users/sign_in', $payload);
-			$response = empty($response) ? false : $response['access_token'];
-		} catch(Exception $e) {
+
+			if (array_key_exists('id_token', $response)) {
+				$jwt = $response['id_token'];
+				$this->access_token = $jwt;
+				$decoded = JWT::decode($jwt, $this->api_key, array('HS256'));
+				$response = $decoded->sub;      // Person.uuid
+			} else $response = false;
+		} catch (Exception $e) {
 			$response = false;
 		}
 
