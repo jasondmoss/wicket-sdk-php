@@ -35,9 +35,9 @@ class WicketCollection
 	/**
 	 * WicketCollection constructor.
 	 * @param array|false $response
-	 * @param \Wicket\Client $client
+	 * @param \Wicket\Client|null $client
 	 */
-	public function __construct($response, Client $client)
+	public function __construct($response, Client $client = null)
 	{
 		$ent_list = array_map(function ($ent) {
 			return Base::fromJsonAPI($ent);
@@ -203,12 +203,12 @@ class WicketCollection
 	/**
 	 * Render the paginator using a given Presenter.
 	 *
-	 * @param  \Illuminate\Contracts\Pagination\Presenter|null $presenter
+	 * @param  string|null $view
 	 * @return string
 	 */
-	public function render(Presenter $presenter = null)
+	public function render($view = null)
 	{
-		return $presenter ? $presenter->render() : $this;
+		return $view ? $view->render() : $this;
 	}
 
 	/**
