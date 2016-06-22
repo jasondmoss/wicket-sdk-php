@@ -90,6 +90,20 @@ class ApiResource
 		return $res;
 	}
 
+	/**
+	 * Posts newly created entities for existing entites. (ex: address to person)
+	 * @param Base $entity Usually a person object.
+	 * @param Base $entity A new entity to be added to the parent.
+	 */
+	public function add_entity(Base $entity, Base $added_entity)
+	{
+		$entity_create_url = '';
+		$entity_create_url .= $entity->type.'/'.$entity->id.'/'.$added_entity->type;
+		$payload = ['json' => $added_entity->toJsonAPI()];
+		$res = $this->client->post($entity_create_url, $payload);
+		return $res;
+	}
+
 	public function delete()
 	{
 		// TODO: Implement delete() method.
