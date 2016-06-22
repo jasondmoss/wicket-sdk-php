@@ -40,10 +40,12 @@ class Client
 
 		// init certain api entities to expose them 'fluently'
 
-		$this->organizations = new ApiResource($this, 'organizations');
 		$this->people = new ApiResource($this, 'people');
 		$this->orders = new ApiResource($this, 'orders');
-		// addresses, emails, ...?
+		$this->emails = new ApiResource($this, 'emails');
+		$this->phones = new ApiResource($this, 'phones');
+		$this->addresses = new ApiResource($this, 'addresses');
+		$this->organizations = new ApiResource($this, 'organizations');
 	}
 
 	public function authorize($person_id)

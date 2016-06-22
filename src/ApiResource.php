@@ -75,17 +75,19 @@ class ApiResource
 			});
 		}
 		$entity_create_url .= '/' . $entity->type;
-
 		$payload = ['json' => $entity->toJsonAPI()];
-
 		$res = $this->client->post(ltrim($entity_create_url, '/'), $payload);
 
 		return $res;
 	}
 
-	public function update($id)
+	public function update(Base $entity)
 	{
-		// TODO: Implement update() method.
+		$entity_create_url = '';
+		$entity_create_url .= '/' . $entity->type;
+		$payload = ['json' => $entity->toJsonAPI()];
+		$res = $this->client->patch(ltrim($entity_create_url, '/').'/'.$entity->id, $payload);
+		return $res;
 	}
 
 	public function delete()
