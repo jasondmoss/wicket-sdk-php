@@ -100,26 +100,8 @@ class ApiResource
 		}
 		$entity_create_url .= '/' . $entity->type;
 		$payload = ['json' => $entity->toJsonAPI()];
-<<<<<<< HEAD
-		$res = $this->client->patch(ltrim($entity_create_url, '/').'/'.$entity->id,  $payload);
-=======
-		$res = $this->client->patch(ltrim($entity_create_url, '/') . '/' . $entity->id, $payload);
-		return $res;
-	}
 
-	/**
-	 * Posts newly created entities for existing entites. (ex: address to person)
-	 * @param Base $entity Usually a person object.
-	 * @param Base $entity A new entity to be added to the parent.
-	 * @return array|false
-	 */
-	public function add_entity(Base $entity, Base $added_entity)
-	{
-		$entity_create_url = '';
-		$entity_create_url .= $entity->type . '/' . $entity->id . '/' . $added_entity->type;
-		$payload = ['json' => $added_entity->toJsonAPI()];
-		$res = $this->client->post($entity_create_url, $payload);
->>>>>>> 2c89b01e77528779da457d27461f8525b7ed7e8b
+		$res = $this->client->patch(ltrim($entity_create_url, '/') . '/' . $entity->id, $payload);
 		return $res;
 	}
 
