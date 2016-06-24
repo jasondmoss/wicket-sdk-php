@@ -81,26 +81,25 @@ class ApiResource
 		return $res;
 	}
 
-	public function update(Base $entity)
+	public function update(Base $entity, $parent_tree = null)
 	{
 		$entity_create_url = '';
+
+		if ($parent_tree) {
+			if (class_basename(get_class($parent_tree)) != 'Collection') {
+				if (!is_array($parent_tree)) {
+					$parent_tree = [$parent_tree];
+				}
+				$parent_tree = collect($parent_tree);
+			}
+
+			$entity_create_url = $parent_tree->reduce(function ($url, $ent) {
+				return $url . '/' . $ent->type . '/' . $ent->id;
+			});
+		}
 		$entity_create_url .= '/' . $entity->type;
 		$payload = ['json' => $entity->toJsonAPI()];
-		$res = $this->client->patch(ltrim($entity_create_url, '/').'/'.$entity->id, $payload);
-		return $res;
-	}
-
-	/**
-	 * Posts newly created entities for existing entites. (ex: address to person)
-	 * @param Base $entity Usually a person object.
-	 * @param Base $entity A new entity to be added to the parent.
-	 */
-	public function add_entity(Base $entity, Base $added_entity)
-	{
-		$entity_create_url = '';
-		$entity_create_url .= $entity->type.'/'.$entity->id.'/'.$added_entity->type;
-		$payload = ['json' => $added_entity->toJsonAPI()];
-		$res = $this->client->post($entity_create_url, $payload);
+		$res = $this->client->patch(ltrim($entity_create_url, '/').'/'.$entity->id,  $payload);
 		return $res;
 	}
 

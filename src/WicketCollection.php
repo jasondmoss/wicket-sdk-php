@@ -16,7 +16,6 @@ use Wicket\Entities\Base;
 
 class WicketCollection
 	extends Collection
-	implements LengthAwarePaginator
 {
 	protected $self;        // url
 	protected $next;        // url
