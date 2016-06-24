@@ -2,6 +2,7 @@
 namespace Wicket;
 
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Prophecy\Exception\Doubler\ClassNotFoundException;
 use Wicket\Entities\Base;
@@ -25,7 +26,7 @@ class ApiResource
 		try {
 			$entity_class = new $entity_class();
 			$this->entity = $entity;
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			throw new ClassNotFoundException($e->getMessage(), $entity_class);
 		}
 
@@ -63,7 +64,7 @@ class ApiResource
 		$entity_create_url = '';
 
 		if ($parent_tree) {
-			if (class_basename(get_class($parent_tree)) != 'Collection') {
+			if (!$parent_tree instanceof Collection) {
 				if (!is_array($parent_tree)) {
 					$parent_tree = [$parent_tree];
 				}
@@ -86,7 +87,7 @@ class ApiResource
 		$entity_create_url = '';
 		$entity_create_url .= '/' . $entity->type;
 		$payload = ['json' => $entity->toJsonAPI()];
-		$res = $this->client->patch(ltrim($entity_create_url, '/').'/'.$entity->id, $payload);
+		$res = $this->client->patch(ltrim($entity_create_url, '/') . '/' . $entity->id, $payload);
 		return $res;
 	}
 
@@ -94,11 +95,12 @@ class ApiResource
 	 * Posts newly created entities for existing entites. (ex: address to person)
 	 * @param Base $entity Usually a person object.
 	 * @param Base $entity A new entity to be added to the parent.
+	 * @return array|false
 	 */
 	public function add_entity(Base $entity, Base $added_entity)
 	{
 		$entity_create_url = '';
-		$entity_create_url .= $entity->type.'/'.$entity->id.'/'.$added_entity->type;
+		$entity_create_url .= $entity->type . '/' . $entity->id . '/' . $added_entity->type;
 		$payload = ['json' => $added_entity->toJsonAPI()];
 		$res = $this->client->post($entity_create_url, $payload);
 		return $res;
