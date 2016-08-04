@@ -37,7 +37,7 @@ class Client
 		$this->api_key = $api_key;
 		$this->api_endpoint = rtrim($api_endpoint, '/') . '/';
 
-		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint]);
+		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint, 'verify' => false]);
 
 		// init certain api entities to expose them 'fluently'
 
