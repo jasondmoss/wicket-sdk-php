@@ -21,6 +21,7 @@ class Client
 	protected $person_id;
 	protected $access_token;
 
+	public $locale;
 	public $organizations;
 	public $people;
 	public $orders;
@@ -36,6 +37,7 @@ class Client
 		$this->app_key = $app_key;
 		$this->api_key = $api_key;
 		$this->api_endpoint = rtrim($api_endpoint, '/') . '/';
+		$this->locale = 'en'; //default to english unless otherwise set
 
 		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint, 'verify' => false]);
 
@@ -204,6 +206,8 @@ class Client
 		$request = new GuzzleHttp\Psr7\Request($http_verb, $method, [
 			'Authorization' => 'Bearer ' . $this->access_token,
 		]);
+		// merge in locale before any request
+		$args['locale'] = $this->locale;
 
 		$response = $this->client->send($request, $args);   # may override if array_key_exists('Authorization', $args['headers'])
 
