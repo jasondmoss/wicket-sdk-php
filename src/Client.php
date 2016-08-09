@@ -37,7 +37,7 @@ class Client
 		$this->api_key = $api_key;
 		$this->api_endpoint = rtrim($api_endpoint, '/') . '/';
 
-		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint]);
+		$this->client = new GuzzleHttp\Client(['base_uri' => $this->api_endpoint, 'verify' => false]);
 
 		// init certain api entities to expose them 'fluently'
 
@@ -63,9 +63,9 @@ class Client
 		$token = [
 			// 'iss' => $this->api_endpoint,
 			// 'aud' => $orguuid,
+			// 'nbf' => $iat, // relax this not-before time-sync requirement as it causes huge headaches
 			'sub' => $person_id,
 			'iat' => $iat,
-			'nbf' => $iat,
 			'exp' => $iat + $expiresIn,
 		];
 
