@@ -36,9 +36,9 @@ class ApiResource
 	/**
 	 * @return WicketCollection A WicketCollection that may be pageable.
 	 */
-	public function all()
+	public function all($args = [])
 	{
-		$response = $this->client->get($this->entity);
+		$response = $this->client->get($this->entity, $args);
 		$response = new WicketCollection($response, $this->client);
 
 		return $response;
