@@ -205,6 +205,7 @@ class Client
 
 		$request = new GuzzleHttp\Psr7\Request($http_verb, $method, [
 			'Authorization' => 'Bearer ' . $this->access_token,
+			'Accept-Language' => $this->locale,
 		]);
 		// merge in locale before any request
 		$args['locale'] = $this->locale;
