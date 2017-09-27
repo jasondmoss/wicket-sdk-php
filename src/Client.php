@@ -52,7 +52,7 @@ class Client
 		$this->intervals = new ApiResource($this, 'intervals');
 		$this->resource_types = new ApiResource($this, 'resource_types');
 		$this->roles = new ApiResource($this, 'roles');
-		$this->roles = new ApiResource($this, 'web_addresses');
+		$this->web_addresses = new ApiResource($this, 'web_addresses');
 	}
 
 	public function authorize($person_id)
