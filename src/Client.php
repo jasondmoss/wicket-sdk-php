@@ -213,6 +213,7 @@ class Client
 		]);
 		// merge in locale before any request
 		$args['locale'] = $this->locale;
+		$args['headers']['content-type'] = 'application/vnd.api+json';
 
 		$response = $this->client->send($request, $args);   # may override if array_key_exists('Authorization', $args['headers'])
 

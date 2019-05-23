@@ -144,10 +144,13 @@ class Base
 
 	public function toJsonAPI()
 	{
-		return ['data' => [
-			'attributes'    => $this->attributes,
-			'relationships' => $this->relationshipsJsonAPI(),
-		]];
+		$data = [];
+		$relationships = $this->relationshipsJsonAPI();
+		$data['data']['attributes'] = $this->attributes;
+		if ($relationships) {
+			$data['data']['relationships'] = $relationships;
+		}
+		return $data;
 	}
 
 	private function relationshipsJsonAPI()
