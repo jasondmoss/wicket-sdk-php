@@ -65,7 +65,7 @@ require_once "vendor/autoload.php";
 $client = new Wicket\Client(
 	env('API_APP_KEY'),
 	env('API_JWT_SECRET'),
-	'https://api.wicket.io'
+	'https://<tenant>-api.wicketcloud.com'
 );
 $client->authorize(env('PERSON_ID'));
 
