@@ -3,24 +3,13 @@ wicket-sdk-php
 
 [![Build Status](https://travis-ci.org/industrialdev/wicket-sdk-php.svg?branch=master)](https://travis-ci.org/industrialdev/wicket-sdk-php)
 
-A PHP library for the Wicket Core API. https://wicket.io/technology
+A PHP library to interact with the [Wicket API](https://wicketapi.docs.apiary.io)
 
 ## Wicket
 
-> Wicket is an open source member data solution
+> Wicket is the world's first Member Data Platform.
 
-Imagine a platform that can
-
-- store your core member data
-- uses open source software
-- has no licensing fees
-- is built to integrate with any third-party application
-
-No more walls around your data.
-
-Wicket makes this dream a reality.
-No longer do non-profits and associations need to put their data into bloated, over-priced, locked down proprietary software applications.
-With Wicket, take back your data, and provide your members with the best possible user experience across your entire digital footprint.
+To learn more please visit [wicket.io](wicket.io)
 
 ## Installing Wicket SDK
 
