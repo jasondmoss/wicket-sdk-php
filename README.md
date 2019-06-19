@@ -9,7 +9,7 @@ A PHP library to interact with the [Wicket API](https://wicketapi.docs.apiary.io
 
 > Wicket is the world's first Member Data Platform.
 
-To learn more please visit [wicket.io](wicket.io)
+To learn more please visit the [Wicket Website](https://wicket.io)
 
 ## Installing Wicket SDK
 
