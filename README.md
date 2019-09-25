@@ -16,15 +16,10 @@ To learn more please visit the [Wicket Website](https://wicket.io)
 The recommended way to install the WicketSDK is through
 [Composer](http://getcomposer.org).
 
-```bash
-# Install Composer, unless installed
-curl -sS https://getcomposer.org/installer | php
-```
 
-Write the Composer file to include the latest development version of WicketSDK:
+Once Composer is installed, create a `composer.json` file to include the latest development version of WicketSDK:
 
 ```json
-cat > composer.json
 {
   "repositories": [
     {
@@ -41,7 +36,7 @@ cat > composer.json
 Next, install the packages:
 
 ```bash
-php composer.phar install
+composer install
 ```
 
 After installing, you need only to `require_once` Composer's autoloader in your code:
@@ -53,7 +48,7 @@ require_once 'vendor/autoload.php';
 You can then later update Wicket using composer:
 
 ```bash
-composer.phar update
+composer update
 ```
 
 ## Using the SDK
