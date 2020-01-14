@@ -42,7 +42,7 @@ $autocomplete_person_uuids = array_map(function ($result) {
 
 $matching_people = [];
 
-if (!empty($autocomplete_uuids)) {
+if (!empty($autocomplete_person_uuids)) {
   // Work around PHP limitation when serializing array query parameters. Wicket expects
   // arrays parameters to be formatted without numbers eg. param[]=1
   $people_query = preg_replace('/\%5B\d+\%5D/', '%5B%5D', http_build_query([
