@@ -26,7 +26,7 @@ class ResponseHelper {
    * @return array|null
    */
   public function getIncludedResource($resource_id) {
-    if (empty($resource_id['type']) || empty($resource_id['id'])) return null;
+    if (!$this->isJsonApiResourceId($resource_id)) return null;
 
     $has_included_resource = (
       !empty($this->included_resources_by_type[$resource_id['type']]) &&
@@ -64,10 +64,14 @@ class ResponseHelper {
   public function getIncludedRelationship($resource, $relationship_name) {
     $relationship = $this->getRelationship($resource, $relationship_name);
 
-    if (isset($relationship['data']) && is_array($relationship['data'])) {
-      return array_map([$this, 'getIncludedResource'], $relationship['data']);
-    } else if (isset($relationship['data'])) {
+    if (isset($relationship['data']) && $this->isJsonApiResourceId($relationship['data'])) {
       return $this->getIncludedResource($relationship['data']);
+    } else if (isset($relationship['data']) && is_array($relationship['data'])) {
+      return array_map([$this, 'getIncludedResource'], $relationship['data']);
     }
+  }
+
+  protected function isJsonApiResourceId($resource_id) {
+    return is_array($resource_id) && !empty($resource_id['type']) && !empty($resource_id['id']);
   }
 }
