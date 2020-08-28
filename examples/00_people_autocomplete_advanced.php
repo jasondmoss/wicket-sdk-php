@@ -24,8 +24,6 @@ $autocomplete_results = $client->get('/search/autocomplete', [
   'query' => [
     // Autocomplete lookup query, can filter based on name, membership number, email etc.
     'query' => 'Laker',
-    // Skip side-loading of people for faster request time. 
-    'include' => '',
     'filter' => [
       // Limit autocomplete results to only people resources
       'resource_type' => 'people'
