@@ -75,7 +75,7 @@ class Client
 			'exp' => $iat + $expiresIn,
 		];
 
-		return JWT::encode($token, $this->api_key);
+		return JWT::encode($token, $this->api_key, 'HS256');
 	}
 
 	/**
