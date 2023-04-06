@@ -3,6 +3,7 @@ namespace Wicket;
 
 use Exception;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use GuzzleHttp;
 use Psr\Http\Message\ResponseInterface;
 
@@ -244,7 +245,7 @@ class Client
 			if (array_key_exists('id_token', $response)) {
 				$jwt = $response['id_token'];
 				$this->access_token = $jwt;
-				$decoded = JWT::decode($jwt, $this->api_key, array('HS256'));
+				$decoded = JWT::decode($jwt, new Key($this->api_key, 'HS256'));
 				$response = $decoded->sub;      // Person.uuid
 			} else $response = false;
 		} catch (Exception $e) {
