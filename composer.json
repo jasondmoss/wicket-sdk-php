@@ -10,9 +10,9 @@
     }
   ],
   "require": {
-    "guzzlehttp/guzzle": "^6.1",
+    "guzzlehttp/guzzle": "^7.8",
     "firebase/php-jwt": "^6.0",
-    "illuminate/support": "^5.2"
+    "illuminate/support": "^10.33"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.2"
@@ -22,5 +22,10 @@
       "Wicket\\": "src"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "config": {
+    "allow-plugins": {
+      "kylekatarnls/update-helper": true
+    }
+  }
 }
