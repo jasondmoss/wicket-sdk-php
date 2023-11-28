@@ -25,6 +25,14 @@ class Client
 	public $locale;
 	public $organizations;
 	public $people;
+	public $emails;
+	public $phones;
+	public $addresses;
+	public $intervals;
+	public $resource_types;
+	public $roles;
+	public $web_addresses;
+	public $connections;
 	public $orders;
 
 	/**
@@ -196,7 +204,7 @@ class Client
 		return false;
 	}
 
-	private function makeRequest($http_verb = 'GET', $method, $args)
+	private function makeRequest(string $http_verb = 'GET', $method, $args)
 	{
 		$http_verb = strtoupper($http_verb);
 		$this->last_error = false;
