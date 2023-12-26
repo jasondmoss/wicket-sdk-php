@@ -8,7 +8,6 @@
 
 namespace Wicket\Entities;
 
-
 class Intervals extends Base
 {
 

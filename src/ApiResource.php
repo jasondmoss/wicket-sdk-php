@@ -1,4 +1,5 @@
 <?php
+
 namespace Wicket;
 
 use Exception;
@@ -10,104 +11,114 @@ use Wicket\Entities\Factory;
 
 class ApiResource
 {
-	private $client;
-	private $entity;
+    private $client;
 
-	/**
-	 * ApiResource constructor.
-	 * @param \Wicket\Client $client
-	 * @param $entity
-	 */
-	public function __construct(Client $client, $entity)
-	{
-		$this->client = $client;
-		$entity_class = join('\\', [__NAMESPACE__, 'Entities', Str::studly($entity)]);
+    private $entity;
 
-		try {
-			$entity_class = new $entity_class();
-			$this->entity = $entity;
-		} catch (Exception $e) {
-			throw new ClassNotFoundException($e->getMessage(), $entity_class);
-		}
 
-		return $entity_class;
-	}
+    /**
+     * ApiResource constructor.
+     *
+     * @param \Wicket\Client $client
+     * @param $entity
+     */
+    public function __construct(Client $client, $entity)
+    {
+        $this->client = $client;
+        $entity_class = implode('\\', [__NAMESPACE__, 'Entities', Str::studly($entity)]);
 
-	/**
-	 * @return WicketCollection A WicketCollection that may be pageable.
-	 */
-	public function all($args = [])
-	{
-		$response = $this->client->get($this->entity, $args);
-		$response = new WicketCollection($response, $this->client);
+        try {
+            $entity_class = new $entity_class();
+            $this->entity = $entity;
+        } catch (Exception $e) {
+            throw new ClassNotFoundException($e->getMessage(), $entity_class);
+        }
 
-		return $response;
-	}
+        return $entity_class;
+    }
 
-	public function fetch($id)
-	{
-		$result = $this->client->get($this->entity . '/' . $id);
-		if ($result && array_key_exists('included', $result)) {
-			$included = $result['included'];
-		}
-		if ($result && array_key_exists('data', $result)) {
-			$result = Factory::create($result['data'], true);
-		}
-		if (!empty($included)) {
-			$result->addIncluded($included);
-		}
-		return $result;
-	}
 
-	public function create(Base $entity, $parent_tree = null)
-	{
-		$entity_create_url = '';
+    /**
+     * @return WicketCollection A WicketCollection that may be pageable.
+     */
+    public function all($args = [])
+    {
+        $response = $this->client->get($this->entity, $args);
+        $response = new WicketCollection($response, $this->client);
 
-		if ($parent_tree) {
-			if (!$parent_tree instanceof Collection) {
-				if (!is_array($parent_tree)) {
-					$parent_tree = [$parent_tree];
-				}
-				$parent_tree = collect($parent_tree);
-			}
+        return $response;
+    }
 
-			$entity_create_url = $parent_tree->reduce(function ($url, $ent) {
-				return $url . '/' . $ent->type . '/' . $ent->id;
-			});
-		}
-		$entity_create_url .= '/' . $entity->type;
-		$payload = ['json' => $entity->toJsonAPI()];
-		$res = $this->client->post(ltrim($entity_create_url, '/'), $payload);
 
-		return $res;
-	}
+    public function fetch($id)
+    {
+        $result = $this->client->get($this->entity . '/' . $id);
+        if ($result && array_key_exists('included', $result)) {
+            $included = $result['included'];
+        }
+        if ($result && array_key_exists('data', $result)) {
+            $result = Factory::create($result['data'], true);
+        }
+        if (! empty($included)) {
+            $result->addIncluded($included);
+        }
 
-	public function update(Base $entity, $parent_tree = null)
-	{
-		$entity_create_url = '';
+        return $result;
+    }
 
-		if ($parent_tree) {
-			if (!$parent_tree instanceof Collection) {
-				if (!is_array($parent_tree)) {
-					$parent_tree = [$parent_tree];
-				}
-				$parent_tree = collect($parent_tree);
-			}
 
-			$entity_create_url = $parent_tree->reduce(function ($url, $ent) {
-				return $url . '/' . $ent->type . '/' . $ent->id;
-			});
-		}
-		$entity_create_url .= '/' . $entity->type;
-		$payload = ['json' => $entity->toJsonAPI()];
+    public function create(Base $entity, $parent_tree = null)
+    {
+        $entity_create_url = '';
 
-		$res = $this->client->patch(ltrim($entity_create_url, '/') . '/' . $entity->id, $payload);
-		return $res;
-	}
+        if ($parent_tree) {
+            if (! $parent_tree instanceof Collection) {
+                if (! is_array($parent_tree)) {
+                    $parent_tree = [$parent_tree];
+                }
+                $parent_tree = collect($parent_tree);
+            }
 
-	public function delete()
-	{
-		// TODO: Implement delete() method.
-	}
+            $entity_create_url = $parent_tree->reduce(function ($url, $ent) {
+                return $url . '/' . $ent->type . '/' . $ent->id;
+            });
+        }
+        $entity_create_url .= '/' . $entity->type;
+        $payload = ['json' => $entity->toJsonAPI()];
+        $res = $this->client->post(ltrim($entity_create_url, '/'), $payload);
+
+        return $res;
+    }
+
+
+    public function update(Base $entity, $parent_tree = null)
+    {
+        $entity_create_url = '';
+
+        if ($parent_tree) {
+            if (! $parent_tree instanceof Collection) {
+                if (! is_array($parent_tree)) {
+                    $parent_tree = [$parent_tree];
+                }
+                $parent_tree = collect($parent_tree);
+            }
+
+            $entity_create_url = $parent_tree->reduce(function ($url, $ent) {
+                return $url . '/' . $ent->type . '/' . $ent->id;
+            });
+        }
+        $entity_create_url .= '/' . $entity->type;
+        $payload = ['json' => $entity->toJsonAPI()];
+
+        $res = $this->client->patch(ltrim($entity_create_url, '/') . '/' . $entity->id, $payload);
+
+        return $res;
+    }
+
+
+    public function delete()
+    {
+        // TODO: Implement delete() method.
+    }
 
 }

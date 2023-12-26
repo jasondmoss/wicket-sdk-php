@@ -8,7 +8,6 @@
 
 namespace Wicket\Entities;
 
-
 class Memberships extends Base
 {
 

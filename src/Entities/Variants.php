@@ -8,7 +8,6 @@
 
 namespace Wicket\Entities;
 
-
 class Variants extends Base
 {
 
